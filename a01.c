@@ -3,12 +3,16 @@
  *
  * Author: Silas Agnew
  * Date: January 28, 2019
- * Inputs:
- * Outputs:
+ * Inputs: Second degree polynomial coefficients (a,b,c), Start x,
+ *  End x, and an X-Step size
+ * Outputs: Table of the polynomial, its derivative, and the area
+ *  underneath the curve from start to current x value.
  *
  * Description:
- *
- *
+ *  This application, given the second degree polynomial
+ *  coefficients, will output a table of values of the polynomial,
+ *  its derivative, and its area underneath the curve.
+ *  This also needs a start and stop point and a x-step size.
  ********************************************************************/
 #include <stdio.h>
 
@@ -49,7 +53,10 @@ int main()
 void usage()
 {
     printf("How to use SECOND DEGREE POLYNOMIAL CALCULATOR.\n");
-    printf("\n");
+    printf("This application, given the second degree polynomial\n");
+    printf("coefficients, will output a table of values of the polynomial,\n");
+    printf("its derivative, and its area underneath the curve.\n");
+    printf("This also needs a start and stop point and a x-step size.\n");
 }
 
 float derivative(float x, float a, float b)
