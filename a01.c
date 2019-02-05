@@ -2,7 +2,7 @@
  * Second Degree Polynomial Calculator
  *
  * Author: Silas Agnew
- * Date: January 28, 2019
+ * Date: Feb 4, 2019
  * Inputs: Second degree polynomial coefficients (a,b,c), Start x,
  *  End x, and an X-Step size
  * Outputs: Table of the polynomial, its derivative, and the area
@@ -16,10 +16,16 @@
  ********************************************************************/
 #include <stdio.h>
 
+// Prints program usage
 void usage(); 
 
+// Returns the value of the derivative at x
 float derivative(float, float, float);
+
+// Returns the value of the definite integral from start x to x
 float integral(float, float, float, float, float);
+
+// Calculates all values for table
 void calculate(float, float, float, float, float, float*, float*, float*);
 
 int main()
