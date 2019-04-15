@@ -214,13 +214,57 @@ void calc_new_dim(dimension_t *gap)
             }
             else
                 sum += _dimensions[i].nominal;
-            
-        
+        }
+    }
+    
+    scale = sum / nom_gap;
+    
+    for (int i = 0; i < _size; i++)
+    {
+        if (_dimensions[i].type != GAP)
+        {
+            if (!_dimensions[i].fixed)
+            {
+                _dimensions[i].nominal *= scale;
+            }
+        }
+    }
 }
 
 void calc_new_tol(dimension_t *gap)
 {
+    float scale;
+    float sum;
+    float fixed;
+    float nom_gap = (_gapptr->upper_tol + _gapptr->lower_tol) / 2.0;
     
+    for (int i = 0; i < _size; i++)
+    {
+        if (_dimensions[i].type != GAP)
+        {
+            if (_dimensions[i].fixed)
+            {
+                fixed = _dimensions[i].upper_tol;
+                nom_gap -= fixed;
+            }
+            else
+                sum += _dimensions[i].upper_tol;
+        }
+    }
+    
+    scale = sum / nom_gap;
+    
+    for (int i = 0; i < _size; i++)
+    {
+        if (_dimensions[i].type != GAP)
+        {
+            if (!_dimensions[i].fixed)
+            {
+                _dimensions[i].upper_tol *= scale;
+                _dimensions[i].lower_tol = -_dimensions[i].upper_tol;
+            }
+        }
+    }
 }
 
     
