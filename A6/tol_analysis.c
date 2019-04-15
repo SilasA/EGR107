@@ -42,6 +42,8 @@ void print_dimensions();
 
 float calc_gap_mean();
 float calc_gap_tol();
+void calc_new_dim(dimension_t *gap);
+void calc_new_tol(dimension_t *gap);
 
 int main(int argc, char **argv)
 {
@@ -61,8 +63,8 @@ int main(int argc, char **argv)
     float maxGap = gapMean + gapTol;
     float minGap = gapMean - gapTol;
 
-    float gapUpperTol;// = _gapptr->upper_tol;
-    float gapLowerTol;// = _gapptr->lower_tol;
+    float gapUpperTol = _gapptr->upper_tol;
+    float gapLowerTol = _gapptr->lower_tol;
 
     char *maxEquality;
     char *minEquality;
@@ -87,7 +89,8 @@ int main(int argc, char **argv)
     printf("The Maximum Gap (%g\") is (%s) than specified (%g\")", maxGap, maxEquality, gapUpperTol);
     printf("The Minimum Gap (%g\") is (%s) than the specified (%g\")", minGap, minEquality, gapLowerTol);
 
-
+    printf("Recommended Adjustments to meet GAP %g, %g:\n", _gapptr->lower_tol, _gapptr->upper_tol);
+    
     return 0;
 }
 
@@ -192,3 +195,32 @@ float calc_gap_tol()
     }
     return sum;
 };
+
+void calc_new_dim(dimension_t *gap)
+{
+    float scale;
+    float sum;
+    float fixed;
+    float nom_gap = (_gapptr->upper_tol + _gapptr->lower_tol) / 2.0;
+    
+    for (int i = 0; i < _size; i++)
+    {
+        if (_dimensions[i].type != GAP)
+        {
+            if (_dimensions[i].fixed)
+            {
+                fixed = _dimensions[i].nominal;
+                nom_gap = fixed - nom_gap;
+            }
+            else
+                sum += _dimensions[i].nominal;
+            
+        
+}
+
+void calc_new_tol(dimension_t *gap)
+{
+    
+}
+
+    
