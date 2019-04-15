@@ -2,14 +2,16 @@
  * TOLERANCE STACK ANALYSIS APPLICATION
  * Author: Silas Agnew
  * Date: 31 March 2019
- * Description:
- *
+ * Description: Tolerance Analysis application for analysing a
+ * tolerance stack and suggesting new tolerances and dimensions to 
+ * meet a target gap.
  ********************************************************************/
 
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #define PART 1
 #define GAP 2
@@ -40,10 +42,13 @@ dimension_t create_gap(int gap, float upper_tol, float lower_tol);
 void populate_dimensions(FILE *file);
 void print_dimensions(bool gaps);
 
+void try_random_dim(int times);
+
 float calc_gap_mean();
 float calc_gap_tol();
 void calc_new_dim();
 void calc_new_tol();
+float random_dimension(float nominal, float tolerance);
 
 int main(int argc, char **argv)
 {
@@ -84,15 +89,21 @@ int main(int argc, char **argv)
     else
         minEquality = "Equals";
 
+    // Tolerance calcs
     printf("Actual Gap Mean: %g\"\n", gapMean);
     printf("Actual Gap Tolerance: %g\"\n", gapTol);
     printf("The Maximum Gap (%g\") is (%s) than specified (%g\")\n", maxGap, maxEquality, gapUpperTol);
     printf("The Minimum Gap (%g\") is (%s) than the specified (%g\")\n\n", minGap, minEquality, gapLowerTol);
 
+    // Suggestion
     printf("Recommended Adjustments to meet GAP %g, %g:\n", gapLowerTol, gapUpperTol);
     calc_new_dim();
     calc_new_tol();
     print_dimensions(false);
+
+    // Stage 3
+    try_random_dim(1000);
+
     return 0;
 }
 
@@ -271,4 +282,37 @@ void calc_new_tol()
     }
 }
 
-    
+float random_dimension(float nominal, float tolerance)
+{
+    float r1, r2, r12;
+    float sigma = tolerance / 3;
+
+    do {
+        r1 = (float)(rand() % 10001) / 10000;
+    } while (r1 == 0);
+
+    r2 = (float)(rand() % 10001) / 10000;
+    r12 = sqrt(-2 * log(r1)) * cos(2 * 3.14159 * r2);
+    return nominal + sigma * r12;
+}
+
+void try_random_dim(int times)
+{
+    FILE *out = fopen("output.csv", "w");
+
+    for (int i = 0; i < times; i++)
+    {
+        for (int j = 0; j < _size; j++)
+        {
+            if (_dimensions[j].type == PART && !_dimensions[j].fixed)
+            {
+                _dimensions[j].nominal = random_dimension(_dimensions[j].nominal, _dimensions[j].upper_tol);
+            }
+        }
+
+        fprintf(out, "%g\n", calc_gap_mean());
+    }
+
+    fclose(out);
+
+}
